@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  app:
+    image: ghcr.io/adrjnk/manucrew-site:latest
+    container_name: manucrew-app
+    restart: always
+    networks:
+      - manucrew-net
+
+  # Tunel Cloudflare
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: manucrew-tunnel
+    restart: unless-stopped
+    command: tunnel run
+    environment:
+      - TUNNEL_TOKEN=${CLOUDFLARE_TOKEN}
+    networks:
+      - manucrew-net
+
+networks:
+  manucrew-net:
+    driver: bridge
